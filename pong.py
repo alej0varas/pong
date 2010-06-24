@@ -9,6 +9,8 @@ import config
 class Pong:
     def __init__(self):
         self.playing = True
+        self.player = Player()
+        self.ia = IA()
         pygame.display.init()
         pygame.event.set_allowed(None)
         pygame.event.set_allowed(pygame.KEYDOWN)
@@ -25,12 +27,9 @@ class Pong:
                 self.quit()
                 continue
             # player
-            if key == pygame.K_UP:
-                print "up"
-            elif key == pygame.K_DOWN:
-                print "down"
+            self.player.play(key)
             # ai
-            # sprites
+            self.ia.play()
             # screen update, flip
 #            print self
 
@@ -39,6 +38,40 @@ class Pong:
 
     def __str__(self):
         return str(self.playing)
+
+
+class Player:
+    def __init__(self):
+        self.pad = Pad(self)
+
+    def play(self, key):
+        if key == pygame.K_UP:
+            self.pad.up()
+        elif key == pygame.K_DOWN:
+            self.pad.down()
+
+
+class IA:
+    def __init__(self):
+        self.pad = Pad(self)
+        #super(type(IA), self).__init__()
+
+    def play(self):
+        print "ia turn"
+        pass
+
+
+class Pad:
+    def __init__(self, owner, x, y):
+        self.owner = owner
+        self.x = x
+        self.y = y
+        
+    def up(self):
+        print "up"
+
+    def down(self):
+        print "down"
 
 
 def main():
