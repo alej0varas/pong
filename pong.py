@@ -3,14 +3,16 @@
 
 import pygame
 
-import cofig
+import config
 
 
 class Pong:
     def __init__(self):
         self.playing = True
+        pygame.display.init()
 
     def run(self):
+        pygame.display.set_mode(config.resolution)
         # display
         while self.playing:
             # events
@@ -18,6 +20,7 @@ class Pong:
             # ai
             # sprites
             # check quit
+            self.playing = False
 
     def __str__(self):
         return str(self.playing)
