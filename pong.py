@@ -18,6 +18,7 @@ class Pong:
         pygame.font.init()
         pygame.event.set_allowed(None)
         pygame.event.set_allowed(pygame.KEYDOWN)
+        pygame.key.set_repeat(config.key_repeat, config.key_repeat)
         
     def run(self):
         # display
@@ -25,13 +26,15 @@ class Pong:
         while self.playing:
             self.board.draw()
             # events
-            key = pygame.event.wait().key
-            # check quit
-            if key == pygame.K_q:
-                self.quit()
-                continue
-            # player
-            self.player.play(key)
+            event = pygame.event.poll()
+            if event:
+                key = event.key
+                # check quit
+                if key == pygame.K_q:
+                    self.quit()
+                    continue
+                # player
+                self.player.play(key)
             # ai
             self.ia.play()
             # draw
@@ -57,8 +60,8 @@ class Pong:
         self.board.draw()
         self.ball.rect.center = (config.ball_init_x, config.ball_init_y)
         self.ball.draw()
-        self.player.pad.centerx = config.init_y
-        self.ia.pad.centery = config.init_y
+        self.player.pad.centerx = config.pad_init_y
+        self.ia.pad.centery = config.pad_init_y
 
     def quit(self):
         self.playing = False
@@ -80,7 +83,7 @@ class Player:
 class IA:
     def __init__(self, game):
         self.game = game
-        self.pad = Pad(self, 100, 100)
+        self.pad = Pad(self, config.ia_pad_x, config.pad_init_y)
         self.score = 0
 
     def play(self):
@@ -97,10 +100,12 @@ class Pad:
         self._rect = self.rect.copy()
         
     def up(self):
-        self.rect.top -= config.pad_speed
+        if not self.rect.top <= 0:
+            self.rect.top -= config.pad_speed
 
     def down(self):
-        self.rect.top += config.pad_speed
+        if not self.rect.bottom >= config.height:
+            self.rect.top += config.pad_speed
 
     def draw(self):
         pygame.draw.rect(self.owner.game.display, config.background_color, self._rect)
